@@ -1,0 +1,13 @@
+services:
+  # 1. O Servidor DNS
+  dns-server:
+    image: coredns/coredns:1.13.1
+    container_name: local-dns
+    command: -conf /Corefile  # Diz ao coredns para usar nosso arquivo de config
+    volumes:
+      - ./Corefile:/Corefile # Mapeia o arquivo de config local para dentro do container
+    ports:
+      # Expõe a porta 53 (TCP e UDP) do DNS para a máquina host
+      - "53:53/tcp"
+      - "53:53/udp"
+    restart: always

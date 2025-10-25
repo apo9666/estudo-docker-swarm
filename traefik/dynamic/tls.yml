@@ -1,0 +1,4 @@
+tls:
+  certificates:
+    - certFile: /certificates/swarm-cert.crt
+      keyFile:  /certificates/swarm-cert.key

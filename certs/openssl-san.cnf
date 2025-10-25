@@ -1,0 +1,22 @@
+[ req ]
+default_bits       = 2048
+prompt             = no
+default_md         = sha256
+distinguished_name = dn
+req_extensions     = req_ext
+
+[ dn ]
+C  = BR
+ST = Sao Paulo
+L  = Sao Paulo
+O  = Minha Empresa
+OU = TI
+CN = meupc.test
+
+[ req_ext ]
+subjectAltName = @alt_names
+
+[ alt_names ]
+DNS.1 = meupc.test
+DNS.2 = *.meupc.test
+IP.1  = 192.168.1.100

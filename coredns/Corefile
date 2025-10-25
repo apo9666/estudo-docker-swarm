@@ -1,0 +1,23 @@
+. {
+    # Loga todas as requisições no console
+    # log
+
+    # Resolve os domínios da nossa lista de "hosts"
+    hosts {
+        # Aponta nossos domínios locais para o localhost (onde o Nginx estará ouvindo)
+        192.168.1.100 app1.meupc.test
+        192.168.1.100 app2.meupc.test
+	      192.168.1.100 repo.meupc.test
+        
+        # Permite que requisições não encontradas aqui passem para o próximo plugin
+        fallthrough
+    }
+
+    cache 300
+
+    # Encaminha todas as outras requisições (ex: google.com) para um DNS público
+    forward . 8.8.8.8 8.8.4.4
+
+    # Loga erros
+    errors
+}

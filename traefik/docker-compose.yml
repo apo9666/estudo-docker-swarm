@@ -1,0 +1,55 @@
+services:
+  traefik:
+    image: traefik:v3.5
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dashboard.rule=Host(`traefik.meupc.test`)"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.tls=true"
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == meupc
+      restart_policy:
+        condition: any
+    ports:
+      - target: 443
+        published: 443
+        mode: host
+    networks:
+      - swarm_overlay
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command:
+      - "--api.insecure=false"
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=swarm_overlay"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--entryPoints.websecure.address=:443"
+      - "--entryPoints.websecure.http.tls=true"
+      - "--log.level=DEBUG"
+    configs:
+      - source: swarm-cert.crt
+        target: /certificates/swarm-cert.crt
+      - source: swarm-cert.key
+        target: /certificates/swarm-cert.key
+      - source: swarm-tls.yml
+        target: /etc/traefik/dynamic/tls.yml
+
+configs:
+  swarm-cert.crt:
+    file: ../certs/meupc.crt
+  swarm-cert.key:
+    file: ../certs/meupc.key
+  swarm-tls.yml:
+    file: ./dynamic/tls.yml
+
+networks:
+  swarm_overlay:
+    name: swarm_overlay
+    external: true

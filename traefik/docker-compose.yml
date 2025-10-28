@@ -2,11 +2,11 @@ services:
   traefik:
     image: traefik:v3.5
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.dashboard.rule=Host(`traefik.meupc.test`)"
-      - "traefik.http.routers.dashboard.entrypoints=websecure"
-      - "traefik.http.routers.dashboard.service=api@internal"
-      - "traefik.http.routers.dashboard.tls=true"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.dashboard.rule=Host(`traefik.meupc.test`)'
+      - 'traefik.http.routers.dashboard.entrypoints=websecure'
+      - 'traefik.http.routers.dashboard.service=api@internal'
+      - 'traefik.http.routers.dashboard.tls=true'
     deploy:
       mode: replicated
       replicas: 1
@@ -24,15 +24,28 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     command:
-      - "--api.insecure=false"
-      - "--api.dashboard=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--providers.docker.network=swarm_overlay"
-      - "--providers.file.directory=/etc/traefik/dynamic"
-      - "--entryPoints.websecure.address=:443"
-      - "--entryPoints.websecure.http.tls=true"
-      - "--log.level=DEBUG"
+      - '--api.insecure=false'
+      - '--api.dashboard=true'
+      - '--providers.docker=true'
+      - '--providers.docker.exposedbydefault=false'
+      - '--providers.docker.network=swarm_overlay'
+      - '--providers.file.directory=/etc/traefik/dynamic'
+      - '--entryPoints.websecure.address=:443'
+      - '--entryPoints.websecure.http.tls=true'
+      - '--experimental.otlpLogs=true'
+      - '--log.level=DEBUG'
+      - '--log.otlp.grpc=true'
+      - '--log.otlp.grpc.insecure=true'
+      - '--log.otlp.grpc.endpoint=otel-collector:4317'
+      - '--accesslog.otlp.grpc=true'
+      - '--accesslog.otlp.grpc.insecure=true'
+      - '--accesslog.otlp.grpc.endpoint=otel-collector:4317'
+      - '--tracing.otlp.grpc=true'
+      - '--tracing.otlp.grpc.insecure=true'
+      - '--tracing.otlp.grpc.endpoint=otel-collector:4317'
+      - '--metrics.otlp.grpc=true'
+      - '--metrics.otlp.grpc.insecure=true'
+      - '--metrics.otlp.grpc.endpoint=otel-collector:4317'
     configs:
       - source: swarm-cert.crt
         target: /certificates/swarm-cert.crt

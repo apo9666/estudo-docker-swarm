@@ -1,0 +1,28 @@
+server:
+  http_listen_port: 3200
+
+distributor:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+
+storage:
+  trace:
+    backend: local
+    local:
+      path: /tmp/tempo/traces
+    wal:
+      path: /tmp/tempo/wal
+      v2_encoding: snappy
+      search_encoding: none
+      ingestion_time_range_slack: 2m
+
+compactor:
+  compaction:
+    block_retention: 48h # Configure total trace retention here
+
+ingester:
+  max_block_bytes: 524288000 # ~500MB default
+  max_block_duration: 30m
